@@ -5,6 +5,7 @@ import com.betrybe.agrix.controller.dto.FarmDtoResponse;
 import com.betrybe.agrix.controller.exception.FarmBadRequestException;
 import com.betrybe.agrix.entity.FarmEntity;
 import com.betrybe.agrix.service.FarmService;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,9 +29,17 @@ public class FarmController {
     this.farmService = farmService;
   }
 
+  /**
+   * Gets farms.
+   *
+   * @return the farms
+   */
   @GetMapping
-  public String hello() {
-    return "Hello World";
+  public ResponseEntity<List<FarmDtoResponse>> getFarms() {
+    List<FarmEntity> farms = farmService.getAllFarms();
+    return ResponseEntity.ok().body(farms.stream()
+            .map(FarmDtoResponse::fromEntity)
+            .toList());
   }
 
   /**
