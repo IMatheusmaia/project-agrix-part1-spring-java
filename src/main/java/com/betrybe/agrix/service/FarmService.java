@@ -25,4 +25,8 @@ public class FarmService {
   public List<FarmEntity> getAllFarms() {
     return farmRepository.findAll();
   }
+
+  public FarmEntity getFarmById(Long id) {
+    return farmRepository.findById(id).orElse(null);
+  }
 }

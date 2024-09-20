@@ -3,6 +3,7 @@ package com.betrybe.agrix.controller;
 import com.betrybe.agrix.controller.dto.FarmDtoCreated;
 import com.betrybe.agrix.controller.dto.FarmDtoResponse;
 import com.betrybe.agrix.controller.exception.FarmBadRequestException;
+import com.betrybe.agrix.controller.exception.FarmNotFoundException;
 import com.betrybe.agrix.entity.FarmEntity;
 import com.betrybe.agrix.service.FarmService;
 import java.util.List;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,6 +42,23 @@ public class FarmController {
     return ResponseEntity.ok().body(farms.stream()
             .map(FarmDtoResponse::fromEntity)
             .toList());
+  }
+
+  /**
+   * Gets farm by id.
+   *
+   * @param id the id
+   * @return the farm by id
+   * @throws FarmNotFoundException the farm not found exception
+   */
+  @GetMapping("/{id}")
+  public ResponseEntity<FarmDtoResponse> getFarmById(@PathVariable Long id)
+          throws FarmNotFoundException {
+    FarmEntity farm = farmService.getFarmById(id);
+    if (farm == null) {
+      throw new FarmNotFoundException();
+    }
+    return ResponseEntity.ok().body(FarmDtoResponse.fromEntity(farm));
   }
 
   /**
