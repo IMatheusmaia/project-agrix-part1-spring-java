@@ -1,0 +1,25 @@
+
+services:
+  application:
+    container_name: app_agrix
+    build: .
+    restart: always
+    depends_on:
+      - db
+    ports:
+      - "9090:9090"
+    environment:
+      - DATABASE_HOST=db
+      - DATABASE_PORT=3306
+      - DATABASE_USER=user
+      - DATABASE_PASSWORD=password
+  db:
+    image: mysql:latest
+    restart: always
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: agrixdb
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_PASSWORD: password
+      MYSQL_USER: user
