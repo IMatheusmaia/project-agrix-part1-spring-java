@@ -120,4 +120,22 @@ public class FarmController {
 
     return ResponseEntity.status(HttpStatus.CREATED).body(CropDtoResponse.fromEntity(newCrop));
   }
+
+  /**
+   * Gets crops by farm id.
+   *
+   * @param farmId the farm id
+   * @return the crops by farm id
+   * @throws FarmNotFoundException the farm not found exception
+   */
+  @GetMapping("/{farmId}/crops")
+  public ResponseEntity<List<CropDtoResponse>> getCropsByFarmId(
+          @PathVariable Long farmId) throws FarmNotFoundException {
+    List<CropEntity> crops = farmService.getCropsByFarmId(farmId);
+    if (crops == null) {
+      throw new FarmNotFoundException();
+    }
+    return ResponseEntity.ok().body(
+            crops.stream().map(CropDtoResponse::fromEntity).toList());
+  }
 }
