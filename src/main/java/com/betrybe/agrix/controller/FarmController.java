@@ -103,11 +103,11 @@ public class FarmController {
           throws CropBadRequestException,
           FarmNotFoundException {
 
-//    if (cropDto.name() == null || cropDto.name().isEmpty()) {
-//      throw new CropBadRequestException();
-//    } else if (cropDto.plantedArea() == null || cropDto.plantedArea() <= 0) {
-//      throw new CropBadRequestException();
-//    }
+    if (cropDto.name() == null || cropDto.name().isEmpty()) {
+      throw new CropBadRequestException();
+    } else if (cropDto.plantedArea() == null || cropDto.plantedArea() <= 0) {
+      throw new CropBadRequestException();
+    }
 
     FarmEntity farm = farmService.getFarmById(farmId);
 
