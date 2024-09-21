@@ -2,6 +2,7 @@ package com.betrybe.agrix.service;
 
 import com.betrybe.agrix.entity.CropEntity;
 import com.betrybe.agrix.repository.CropRepository;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,5 +21,9 @@ public class CropService {
 
   public CropEntity createCrop(CropEntity crop) {
     return cropRepository.save(crop);
+  }
+
+  public List<CropEntity> getAllCrops() {
+    return cropRepository.findAll();
   }
 }
