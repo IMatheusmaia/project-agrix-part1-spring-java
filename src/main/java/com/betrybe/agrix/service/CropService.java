@@ -26,4 +26,8 @@ public class CropService {
   public List<CropEntity> getAllCrops() {
     return cropRepository.findAll();
   }
+
+  public CropEntity getCropById(Long id) {
+    return cropRepository.findById(id).orElse(null);
+  }
 }

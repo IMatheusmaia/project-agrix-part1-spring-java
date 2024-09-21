@@ -1,6 +1,7 @@
 package com.betrybe.agrix.controller.advice;
 
 import com.betrybe.agrix.controller.exception.CropBadRequestException;
+import com.betrybe.agrix.controller.exception.CropNotFoundException;
 import com.betrybe.agrix.controller.exception.FarmBadRequestException;
 import com.betrybe.agrix.controller.exception.FarmNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -25,6 +26,11 @@ public class GlobalControllerAdvice {
 
   @ExceptionHandler(FarmNotFoundException.class)
   public ResponseEntity<String> handleFarmNotFoundException(FarmNotFoundException exception) {
+    return ResponseEntity.status((HttpStatus.NOT_FOUND)).body(exception.getMessage());
+  }
+
+  @ExceptionHandler(CropNotFoundException.class)
+  public ResponseEntity<String> handleCropNotFoundException(CropNotFoundException exception) {
     return ResponseEntity.status((HttpStatus.NOT_FOUND)).body(exception.getMessage());
   }
 }
