@@ -1,10 +1,15 @@
 package com.betrybe.agrix.controller;
 
+import com.betrybe.agrix.controller.dto.CropDtoCreated;
+import com.betrybe.agrix.controller.dto.CropDtoResponse;
 import com.betrybe.agrix.controller.dto.FarmDtoCreated;
 import com.betrybe.agrix.controller.dto.FarmDtoResponse;
+import com.betrybe.agrix.controller.exception.CropBadRequestException;
 import com.betrybe.agrix.controller.exception.FarmBadRequestException;
 import com.betrybe.agrix.controller.exception.FarmNotFoundException;
+import com.betrybe.agrix.entity.CropEntity;
 import com.betrybe.agrix.entity.FarmEntity;
+import com.betrybe.agrix.service.CropService;
 import com.betrybe.agrix.service.FarmService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,10 +30,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class FarmController {
 
   private final FarmService farmService;
+  private final CropService cropService;
 
   @Autowired
-  public FarmController(FarmService farmService) {
+  public FarmController(FarmService farmService, CropService cropService) {
     this.farmService = farmService;
+    this.cropService = cropService;
   }
 
   /**
@@ -78,5 +85,39 @@ public class FarmController {
     FarmEntity farmResponsedb = farmService.createFarm(FarmDtoCreated.toEntity(farmDto));
     FarmDtoResponse farmResponse = FarmDtoResponse.fromEntity(farmResponsedb);
     return ResponseEntity.status(HttpStatus.CREATED).body(farmResponse);
+  }
+
+  /**
+   * Associate crop to farm response entity.
+   *
+   * @param farmId  the farm id
+   * @param cropDto the crop dto
+   * @return the response entity
+   * @throws CropBadRequestException the crop bad request exception
+   * @throws FarmNotFoundException   the farm not found exception
+   */
+  @PostMapping("/{farmId}/crops")
+  public ResponseEntity<CropDtoResponse> associateCropToFarm(
+          @PathVariable Long farmId,
+          @RequestBody CropDtoCreated cropDto)
+          throws CropBadRequestException,
+          FarmNotFoundException {
+
+//    if (cropDto.name() == null || cropDto.name().isEmpty()) {
+//      throw new CropBadRequestException();
+//    } else if (cropDto.plantedArea() == null || cropDto.plantedArea() <= 0) {
+//      throw new CropBadRequestException();
+//    }
+
+    FarmEntity farm = farmService.getFarmById(farmId);
+
+    if (farm == null) {
+      throw new FarmNotFoundException();
+    }
+
+    CropEntity newCrop = cropService.createCrop(CropDtoCreated.toEntity(cropDto, farm));
+    farm.setCrops(List.of(newCrop));
+
+    return ResponseEntity.status(HttpStatus.CREATED).body(CropDtoResponse.fromEntity(newCrop));
   }
 }
