@@ -1,13 +1,22 @@
-FROM eclipse-temurin:17-jdk-jammy AS build-image
+# Estágio 1: Build da aplicação
+FROM maven:3-openjdk-17 AS build-image
+
+WORKDIR /to-build-app
+
+COPY pom.xml ./
+RUN mvn dependency:go-offline -B
+
+COPY src ./src
+
+RUN mvn package -DskipTests
+
+
+FROM eclipse-temurin:17-jre-alpine
+
 WORKDIR /app
 
-COPY . .
+COPY --from=build-image /to-build-app/target/*.jar app.jar
 
-RUN ./mvnw clean package -Dmaven.test.skip=true
+EXPOSE 8080
 
-FROM eclipse-temurin:17-jre-jammy AS app
-COPY --from=build-image /app/target/*.jar /app/app.jar
-
-EXPOSE 9090
-
-ENTRYPOINT ["java", "-jar", "/app/app.jar", "--server.port=9090"]
+ENTRYPOINT ["java", "-jar", "app.jar"]
